@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 export default class SendMessage extends Component {
   state = {
+    isName: false,
     message: ''
   };
 
@@ -10,8 +11,29 @@ export default class SendMessage extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    this.props.sendMessage("Adrian", this.state.message);
-    this.setState({message: ''});
+
+    if(!this.state.isName) {
+      if(this.state.message.length > 15 || this.state.message.length < 5) {
+        alert("Your nickname should be between 5 - 15 characters");
+      } else {
+        this.props.setUsername(this.state.message);
+        this.setState({
+          isName: true,
+          message: ''
+        })
+      }
+      return;
+    }
+
+    this.props.sendMessage(this.state.message);
+    this.setState({
+      isName: this.state.isName,
+      message: ''
+    });
+  }
+
+  inputPlaceholder = () => {
+    return this.state.isName ? "Type something..." : "Enter your name";
   }
 
   render() {
@@ -22,7 +44,7 @@ export default class SendMessage extends Component {
           type="text" 
           name="message" 
           style={{flex: '10', padding: '5px'}}
-          placeholder="Type something..."
+          placeholder={this.inputPlaceholder()}
           value={this.state.message}
           onChange={this.onChange}
         />
@@ -38,5 +60,6 @@ export default class SendMessage extends Component {
 }
 
 SendMessage.propTypes = {
-  sendMessage: PropTypes.func.isRequired
+  sendMessage: PropTypes.func.isRequired,
+  setUsername: PropTypes.func.isRequired
 }

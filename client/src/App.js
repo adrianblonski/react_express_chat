@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import Header from './components/layout/Header';
+import Header from './components/Header';
 import Messages from './components/Messages';
 import SendMessage from './components/SendMessage';
 
@@ -8,6 +8,7 @@ import './App.css';
 
 class App extends Component {
   state = {
+    user: 'Guest',
     messages: [
       {
         id: 0,
@@ -50,14 +51,22 @@ class App extends Component {
     return body;
   }
 
-  sendMessage = (author, content) => {
+  sendMessage = (content) => {
     const newItem = {
       id: this.state.messages[this.state.messages.length - 1].id + 1,
-      author,
+      author: this.state.user,
       content
     };
     this.setState({
+      user: this.state.user,
       messages: [...this.state.messages, newItem]
+    });
+  }
+
+  setUsername = (name) => {
+    this.setState({
+      user: name,
+      messages: this.state.messages
     });
   }
 
@@ -69,16 +78,16 @@ class App extends Component {
   }
 
   render() {
-    const { messages } = this.state;
+    const { user, messages } = this.state;
 
     return (
       <div className="App">
         <div className="container">
-          <Header />
+          <Header username={user} />
           <div className="chat-container">
             <Messages messages={messages} />
           </div>
-          <SendMessage sendMessage={this.sendMessage} />
+          <SendMessage sendMessage={this.sendMessage} setUsername={this.setUsername} />
         </div>
       </div>
     );
