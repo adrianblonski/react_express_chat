@@ -22,6 +22,7 @@ app.post('/api/messages', (req, res) => {
     return res.send({response: 'OK'});
   } else {
     console.log('Invalid object');
+    console.log(req.body);
     return res.send({response: 'Invalid POST data object'});
   }
 });
