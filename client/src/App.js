@@ -9,38 +9,7 @@ import './App.css';
 class App extends Component {
   state = {
     user: 'Guest',
-    messages: [
-      {
-        id: 0,
-        author: 'Tester 1',
-        content: 'A very important message A very important message A very important message A very important message'
-      },
-      {
-        id: 1,
-        author: 'Tester 2',
-        content: 'I see'
-      },
-      {
-        id: 2,
-        author: 'Tester 1',
-        content: 'What do u see?'
-      },
-      {
-        id: 3,
-        author: 'Tester 2',
-        content: 'YOUR IMPORTANT MESSAGE!'
-      },
-      {
-        id: 4,
-        author: 'Tester 1',
-        content: 'Thats fine for me xd'
-      },
-      {
-        id: 5,
-        author: 'Tester 2',
-        content: 'Good, cya'
-      },
-    ]
+    messages: []
   }
 
   getMessages = async() => {
@@ -51,15 +20,20 @@ class App extends Component {
     return body;
   }
 
-  sendMessage = (content) => {
+  sendMessage = async(content) => {
     const newItem = {
-      id: this.state.messages[this.state.messages.length - 1].id + 1,
       author: this.state.user,
       content
     };
-    this.setState({
-      user: this.state.user,
-      messages: [...this.state.messages, newItem]
+
+    fetch('/api/messages', {
+      method: 'post',
+      headers: {
+        'Content-Type':'application/json'
+      },
+      body: JSON.stringify(newItem)
+    }).then((res) => {
+      //console.log(res);
     });
   }
 
@@ -71,10 +45,15 @@ class App extends Component {
   }
 
   componentDidMount = () => {
-    /*this.getMessages()
+    this.interval = setInterval(() => 
+      this.getMessages()
       .then(res => {
         this.setState({ messages: [...res] });
-      });*/
+      }), 500);
+  }
+
+  componentWillUnmount = () => {
+    clearInterval(this.interval);
   }
 
   render() {
