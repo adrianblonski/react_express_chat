@@ -16,9 +16,19 @@ app.get('/api/messages', (req, res) => {
 });
 
 app.post('/api/messages', (req, res) => {
-  console.log(req.body);
-  msg.create(req.body.author, req.body.content);
-  return res.send({response: 'OK'});
+  if(msg.validate(req.body)) {
+    console.log(req.body);
+    msg.create(req.body.author, req.body.content);
+    return res.send({response: 'OK'});
+  } else {
+    console.log('Invalid object');
+    return res.send({response: 'Invalid POST data object'});
+  }
 });
+
+app.get('/api/messages/:messageId', (req, res) => {
+  return res.send(msg.getById(req.params.messageId));
+});
+
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
